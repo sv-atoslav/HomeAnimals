@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HomeAnimals</title>
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 				'data-turbolinks-track': 'reload' %>
+  </head>
+  <body>
+  <table width="100%"><tbody><tr align="center">
+  	<td><%= link_to 'люди', men_path %></td>
+  	<td><%= link_to 'домашние животные', man_with_animals_path %></td>
+  	<td><%= link_to 'животные', animals_path %></td>
+  </tr></tbody></table>
+  <hr>
+  <%= yield %>
+  </body>
+</html>

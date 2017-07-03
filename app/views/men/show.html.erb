@@ -1,0 +1,8 @@
+<p id="notice"><%= notice %></p>
+<p><strong>Name:</strong><%= @man.name %></p>
+<br><strong>Have animals:</strong>
+<% @old_list.each do |animal_id| %>
+	<br><%= Animal.find(animal_id).view %>
+<% end %>
+<%= link_to 'Edit', edit_man_path(@man) %>
+<%= link_to 'Back', men_path %>

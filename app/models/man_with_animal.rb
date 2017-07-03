@@ -1,0 +1,2 @@
+class ManWithAnimal < ApplicationRecord
+end

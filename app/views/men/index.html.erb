@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+<h1>Men</h1>
+<table>
+  <thead><tr>
+    <th>Name</th>
+    <th colspan="3"></th>
+  </tr></thead>
+  <tbody><% @men.each do |man| %><tr>
+        <td><%= man.name %></td>
+        <td><%= link_to 'Show', man %></td>
+        <td><%= link_to 'Edit', edit_man_path(man) %></td>
+        <td><%= link_to 'Destroy', man, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr><% end %></tbody>
+</table>
+<br><%= link_to 'New Man', new_man_path %>

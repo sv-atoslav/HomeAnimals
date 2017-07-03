@@ -1,0 +1,17 @@
+<p id="notice"><%= notice %></p>
+<h1>Man With Animals</h1>
+<table>
+  <thead><tr>
+    <th>Man</th>
+    <th>Animal</th>
+    <th colspan="3"></th>
+  </tr></thead>
+  <tbody><% @man_with_animals.each do |man_with_animal| %><tr>
+        <td><%= Man.find(man_with_animal.man).name %></td>
+        <td><%= Animal.find(man_with_animal.animal).view %></td>
+        <td><%= link_to 'Show', man_with_animal %></td>
+        <td><%= link_to 'Edit', edit_man_with_animal_path(man_with_animal) %></td>
+        <td><%= link_to 'Destroy', man_with_animal, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr><% end %></tbody>
+</table>
+<br><%= link_to 'New Man With Animal', new_man_with_animal_path %>

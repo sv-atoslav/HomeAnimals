@@ -1,0 +1,11 @@
+<%= form_with(model: man_with_animal, local: true) do |form| %>
+  <% if man_with_animal.errors.any? %><div id="error_explanation">
+    <h2><%= pluralize(man_with_animal.errors.count, "error") %> prohibited this man_with_animal from being saved:</h2>
+    <ul><% man_with_animal.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %></ul>
+  </div><% end %>
+  <div class="field"><%= form.collection_select(:man,       Man.all, :id, :name) %></div>
+  <div class="field"><%= form.collection_select(:animal, Animal.all, :id, :view) %></div>
+  <div class="actions"><%= form.submit %></div>
+<% end %>
