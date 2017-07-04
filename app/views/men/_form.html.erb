@@ -1,17 +1,20 @@
 <%= form_with(model: man, local: true) do |form| %>
   <% if man.errors.any? %><div id="error_explanation">
-      <h2><%= pluralize(man.errors.count, "error") %> prohibited this man from being saved:</h2>
-      <ul><% man.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %></ul>
+    <h2><%= pluralize(man.errors.count, "error") %> prohibited this man from being saved:</h2>
+    <ul><% man.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %></ul>
   </div><% end %>
   <div class="field"><%= form.label :name %><%= form.text_field :name, id: :man_name %></div>
   <p>Список животных</p>
+  <% animal_id = "animal_id" %>
+  <% @new_list = {} %>
+  <% @new_list[animal_id] = {} %>
   <% Animal.all.each do |one_animal| %>
-    <%= label_tag(:@new_list[one_animal.id], one_animal.view) %>
-    <!-- check_box_tag(name, value = "1", checked = false, options = {}) -->
-    <%= check_box_tag(:@new_list[one_animal.id], one_animal.id, @old_list.include?(one_animal.id) ) %>
-    <!-- после отправки данных серверу, в @new_list должны хранится id тех животых, чекбоксы которых были выбраны в момент нажатия на submit -->
+    <% string_id = "animal_id_" + one_animal.id.to_s %>
+    <%= label_tag(@new_list[animal_id][one_animal.id], one_animal.view) %>
+    <!--check_box_tag(name, value = "1", checked = false, options = {}) -->
+    <%= check_box_tag(string_id , one_animal.id, @old_list.include?(one_animal.id), id: string_id) %>
   <% end %>
   <div class="actions"><%= form.submit %></div>
 <% end %>

@@ -1,7 +1,6 @@
 class MenController < ApplicationController
-  before_action :init_lists,        only: [:new , :edit, :update, ]
-  before_action :set_man,           only: [:show, :edit, :update, :destroy]
-# before_action :ids_of_my_animals, only: [:show, :edit, :update, :destroy]
+  before_action :set_man, only: [ :show, :edit , :update, :destroy]
+  before_action :update_list_my_animals, only: [ :update, :destroy, :create]
 
   # GET /men
   # GET /men.json
@@ -17,6 +16,7 @@ class MenController < ApplicationController
   # GET /men/new
   def new
     @man = Man.new
+    @old_list = []
   end
 
   # GET /men/1/edit
@@ -29,7 +29,6 @@ class MenController < ApplicationController
     @man = Man.new(man_params)
     respond_to do |format|
       if @man.save
-        update_list_my_animals
         format.html { redirect_to @man, notice: 'Man was successfully created.' }
         format.json { render :show, status: :created, location: @man }
       else
@@ -44,12 +43,6 @@ class MenController < ApplicationController
   def update
     respond_to do |format|
       if @man.update(man_params)
-        Animal.all.each do |one_animal|
-          if params[:@new_list][one_animal.id] == one_animal.id
-            @new_list.push(one_animal.id)
-          end
-        end
-        update_list_my_animals
         format.html { redirect_to @man, notice: 'Man was successfully updated.' }
         format.json { render :show, status: :ok, location: @man }
       else
@@ -62,8 +55,6 @@ class MenController < ApplicationController
   # DELETE /men/1
   # DELETE /men/1.json
   def destroy
-    @new_list = []
-    update_list_my_animals
     @man.destroy
     respond_to do |format|
       format.html { redirect_to men_url, notice: 'Man was successfully destroyed.' }
@@ -87,30 +78,58 @@ class MenController < ApplicationController
     params.require(:man).permit(:name)
   end
 
-  def init_lists
-    @old_list = [] #id уже имеющихся животных, пусто на случай нового человека
-    @new_list = [] #id выбранных животных
-  end
-
-  # def ids_of_my_animals
-  #   @old_list = []
-  #   ManWithAnimal.where(man: @man.id).each do |pair|
-  #     @old_list.push(pair.animal)
-  #   end
-  #   теперь в @old_list хранятся id "моих" животных
-  # end
-
   def update_list_my_animals
-    delete_list = @old_list - @new_list
-    delete_list.each do |animal_id|
-      ManWithAnimal.find(animal_id).destroy
+    @new_list = []
+    # if ( action_name != 'destroy')
+    #   @new_list = params.require(:@new_list).permit(:id, category_ids: []).to_a
+    # end
+    if (action_name != 'destroy')
+      # n=1
+      # params.each do
+      #   puts params[n]
+      #   if params[n].scan("animal_id_").size==1
+      #     @new_list << params[n].value
+      #     puts params[n]+" now into c"
+      #   end
+      #   n+=1
+      #   break if n == params.size
+      # end
+      n = 1
+      loop do
+        string_param_n = "animal_id_" + n.to_s
+        if params[string_param_n.to_s]
+          @new_list << params[string_param_n.to_s]
+        end
+        n += 1
+        break if n == Animal.count
+      end
     end
-    create_list = @new_list - @old_list
-    create_list.each do |animal_id|
-      new_pair = ManWithAnimal.new
-      new_pair.animal = animal_id
-      new_pair.man = @man.id
-      new_pair.save
+    if (action_name == 'create')
+      @old_list = []
+    end
+    puts "new_list is "
+    puts @new_list
+    puts "old_list is "
+    puts @old_list
+    if (action_name != 'create')
+      delete_list = @old_list - @new_list
+      if delete_list.count > 0
+        delete_list.each do |animal_id|
+          # one_delete_pair =
+          ManWithAnimal.where(man: @man.id, animal: :animal_id).destroy
+        end
+          #puts "one_delete_pair is " + one_delete_pair.to_a.to_s
+          #one_delete_pair
+      end
+    end
+    if (action_name != 'destroy')
+      create_list = @new_list - @old_list
+      create_list.each do |animal_id|
+        new_pair = ManWithAnimal.new
+        new_pair.animal = animal_id
+        new_pair.man = @man.id
+        new_pair.save
+      end
     end
   end
 end
