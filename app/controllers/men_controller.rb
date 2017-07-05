@@ -26,7 +26,6 @@ class MenController < ApplicationController
   # POST /men
   # POST /men.json
   def create
-    @man = Man.new(man_params)
     respond_to do |format|
       if @man.save
         format.html { redirect_to @man, notice: 'Man was successfully created.' }
@@ -79,21 +78,12 @@ class MenController < ApplicationController
   end
 
   def update_list_my_animals
-    @new_list = []
-    # if ( action_name != 'destroy')
-    #   @new_list = params.require(:@new_list).permit(:id, category_ids: []).to_a
-    # end
-    if (action_name != 'destroy')
-      # n=1
-      # params.each do
-      #   puts params[n]
-      #   if params[n].scan("animal_id_").size==1
-      #     @new_list << params[n].value
-      #     puts params[n]+" now into c"
-      #   end
-      #   n+=1
-      #   break if n == params.size
-      # end
+    if (action_name == 'destroy')
+      ManWithAnimal.where(man: @man.id).each do |one_pair|
+        one_pair.destroy
+      end
+    else
+      @new_list = []
       n = 1
       loop do
         string_param_n = "animal_id_" + n.to_s
@@ -101,34 +91,25 @@ class MenController < ApplicationController
           @new_list << params[string_param_n.to_s]
         end
         n += 1
-        break if n == Animal.count
+        break if n > Animal.count
       end
-    end
-    if (action_name == 'create')
-      @old_list = []
-    end
-    puts "new_list is "
-    puts @new_list
-    puts "old_list is "
-    puts @old_list
-    if (action_name != 'create')
-      delete_list = @old_list - @new_list
-      if delete_list.count > 0
-        delete_list.each do |animal_id|
-          # one_delete_pair =
-          ManWithAnimal.where(man: @man.id, animal: :animal_id).destroy
+      if (action_name == 'create')
+        @man = Man.new(man_params)
+        @man.save
+      else
+        ManWithAnimal.where(man: @man.id).each do |one_pair|
+          if !@new_list.include?(one_pair.animal)
+            one_pair.destroy
+          end
         end
-          #puts "one_delete_pair is " + one_delete_pair.to_a.to_s
-          #one_delete_pair
       end
-    end
-    if (action_name != 'destroy')
-      create_list = @new_list - @old_list
-      create_list.each do |animal_id|
-        new_pair = ManWithAnimal.new
-        new_pair.animal = animal_id
-        new_pair.man = @man.id
-        new_pair.save
+      @new_list.each do |animal_id|
+        if ManWithAnimal.where(man: @man.id, animal: animal_id).count==0
+          one_pair = ManWithAnimal.new
+          one_pair.animal = animal_id
+          one_pair.man = @man.id
+          one_pair.save
+        end
       end
     end
   end

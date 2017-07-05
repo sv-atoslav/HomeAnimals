@@ -1,24 +1,9 @@
-# README
+I create this App because I want understand how server read data from checkboxes, what I can manipulate this process
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+most warning page in this app - page where I edit human
 
-Things you may want to cover:
+* Ruby version and
+ruby 2.3.3p222 (2016-11-21) [i386-linux-gnu]
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* Rails version 
+Rails 5.1.2

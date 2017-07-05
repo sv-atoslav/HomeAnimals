@@ -7,8 +7,20 @@
     <th colspan="3"></th>
   </tr></thead>
   <tbody><% @man_with_animals.each do |man_with_animal| %><tr>
-        <td><%= Man.find(man_with_animal.man).name %></td>
-        <td><%= Animal.find(man_with_animal.animal).view %></td>
+        <td>
+          <% if man_with_animal.man.nil? %>
+            <i>error (nil)</i>
+          <% else %>
+            <%= Man.find(man_with_animal.man).name %>
+          <% end %>
+        </td>
+        <td>
+          <% if man_with_animal.animal.nil? %>
+            <i>error (nil)</i>
+          <% else %>
+            <%= Animal.find(man_with_animal.animal).view %>
+          <% end %>
+        </td>
         <td><%= link_to 'Show', man_with_animal %></td>
         <td><%= link_to 'Edit', edit_man_with_animal_path(man_with_animal) %></td>
         <td><%= link_to 'Destroy', man_with_animal, method: :delete, data: { confirm: 'Are you sure?' } %></td>
