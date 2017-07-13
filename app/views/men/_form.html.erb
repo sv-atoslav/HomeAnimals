@@ -7,14 +7,11 @@
   </div><% end %>
   <div class="field"><%= form.label :name %><%= form.text_field :name, id: :man_name %></div>
   <p>Список животных</p>
-  <% animal_id = "animal_id" %>
-  <% @new_list = {} %>
-  <% @new_list[animal_id] = {} %>
   <% Animal.all.each do |one_animal| %>
-    <% string_id = "animal_id_" + one_animal.id.to_s %>
-    <%= label_tag(@new_list[animal_id][one_animal.id], one_animal.view) %>
     <!--check_box_tag(name, value = "1", checked = false, options = {}) -->
-    <%= check_box_tag(string_id , one_animal.id, @old_list.include?(one_animal.id), id: string_id) %>
+    <%= check_box_tag("animal_ids[]" , one_animal.id, @old_list.include?(one_animal.id) )%>
+    <%= one_animal.view %>
+    <br>
   <% end %>
   <div class="actions"><%= form.submit %></div>
 <% end %>

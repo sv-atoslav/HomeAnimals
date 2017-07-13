@@ -78,38 +78,40 @@ class MenController < ApplicationController
   end
 
   def update_list_my_animals
-    if (action_name == 'destroy')
+    if (action_name == 'create')
+      @man = Event.new(man_params)
+      @man.save
+      @old_list = []
+    else
+      set_man
+    end
+    # "wodr" need == checkbox I parametr without []
+    if (action_name == 'destroy' || params["animal_ids"].nil?)
       ManWithAnimal.where(man: @man.id).each do |one_pair|
         one_pair.destroy
       end
     else
-      @new_list = []
-      n = 1
-      loop do
-        string_param_n = "animal_id_" + n.to_s
-        if params[string_param_n.to_s]
-          @new_list << params[string_param_n.to_s]
-        end
-        n += 1
-        break if n > Animal.count
+      new_list = []
+      params["animal_ids"].each do |animal_id|
+        new_list << animal_id.to_i
       end
-      if (action_name == 'create')
-        @man = Man.new(man_params)
-        @man.save
-      else
-        ManWithAnimal.where(man: @man.id).each do |one_pair|
-          if !@new_list.include?(one_pair.animal)
-            one_pair.destroy
-          end
+      create_list =  new_list - @old_list
+      delete_list = @old_list -  new_list
+      # when you have some problems, un commented this lines
+      # puts "old_list is #{@old_list}"
+      # puts "new_list is #{new_list}"
+      # puts "create_list is #{create_list}"
+      # puts "delete_list is #{delete_list}"
+      delete_list.each do |animal_id|
+        ManWithAnimal.where(man: @man.id, animal: animal_id).each do |one_pair|
+          one_pair.destroy
         end
       end
-      @new_list.each do |animal_id|
-        if ManWithAnimal.where(man: @man.id, animal: animal_id).count==0
-          one_pair = ManWithAnimal.new
-          one_pair.animal = animal_id
-          one_pair.man = @man.id
-          one_pair.save
-        end
+      create_list.each do |animal_id|
+        one_pair = ManWithAnimal.new
+        one_pair.animal = animal_id
+        one_pair.man = @man.id
+        one_pair.save
       end
     end
   end
